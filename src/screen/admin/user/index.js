@@ -67,7 +67,12 @@ const User = (props) => {
         !isEdit
           ? `${config.server}/user/store`
           : `${config.server}/user/update/${input.id}`,
-        { ...input }
+        { ...input },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
       );
       fetchUser();
       Swal.fire(
@@ -103,7 +108,14 @@ const User = (props) => {
       confirmButtonText: "Yes, delete it!",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        const response = await axios.post(`${config.server}/user/delete/${id}`);
+        const response = await axios.post(
+          `${config.server}/user/delete/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
         if (response.status == 200) {
           fetchUser();
           Swal.fire("Deleted!", "Your file has been deleted.", "success");
