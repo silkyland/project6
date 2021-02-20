@@ -12,6 +12,7 @@ import {
   Label,
   Table,
 } from "reactstrap";
+import Swal from "sweetalert2";
 import config from "../../../config";
 
 const User = (props) => {
@@ -69,6 +70,13 @@ const User = (props) => {
         { ...input }
       );
       fetchUser();
+      Swal.fire(
+        isEdit ? `Updated!` : `Added!`,
+        isEdit
+          ? `User was updated successfully`
+          : `User was added successfully.`,
+        "success"
+      );
       setIsEdit(false);
       setIsOpen(false);
       setInput({
@@ -85,10 +93,23 @@ const User = (props) => {
   };
 
   const handleDelete = async (id) => {
-    const response = await axios.post(`${config.server}/user/delete/${id}`);
-    if (response.status == 200) {
-      fetchUser();
-    }
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const response = await axios.post(`${config.server}/user/delete/${id}`);
+        if (response.status == 200) {
+          fetchUser();
+          Swal.fire("Deleted!", "Your file has been deleted.", "success");
+        }
+      }
+    });
   };
 
   const handleChangeInput = (e) => {
@@ -177,6 +198,7 @@ const User = (props) => {
                         size="sm"
                         onClick={() => {
                           setIsEdit(true);
+                          setIsOpen(true);
                           setInput({
                             ...input,
                             id: user.id,
