@@ -260,7 +260,13 @@ const Post = (props) => {
                 {posts.map((post, index) => (
                   <tr key={index}>
                     <td>{index + 1}</td>
-                    <td>{post.thumbnail}</td>
+                    <td>
+                      <img
+                        src={`${config.serverRoot}/${post.thumbnail}`}
+                        width="64"
+                        alt={post.name}
+                      />
+                    </td>
                     <td>{post.title}</td>
                     <td>{post.category.name}</td>
                     <td>{post.user.name}</td>
